@@ -356,7 +356,8 @@ if run_button or 'run_done' in st.session_state:
             df_pca_latents, 
             title="PCA Latent Factors Evolution",
             labels={'value': 'Value', 'index': 'Date'},
-            color_discrete_sequence=px.colors.qualitative.G10
+            color_discrete_sequence=px.colors.qualitative.G10,
+            render_mode='svg'
         )
         fig_pca_ev.update_traces(line=dict(shape='spline', width=2))
         fig_pca_ev.update_layout(plotly_layout_args)
@@ -368,7 +369,8 @@ if run_button or 'run_done' in st.session_state:
             df_ae_latents, 
             title="Autoencoder Latent Factors Evolution",
             labels={'value': 'Value', 'index': 'Date'},
-            color_discrete_sequence=px.colors.qualitative.Bold
+            color_discrete_sequence=px.colors.qualitative.Bold,
+            render_mode='svg'
         )
         fig_ae_ev.update_traces(line=dict(shape='spline', width=2))
         fig_ae_ev.update_layout(plotly_layout_args)
