@@ -358,7 +358,7 @@ if run_button or 'run_done' in st.session_state:
             labels={'value': 'Value', 'index': 'Date'},
             color_discrete_sequence=px.colors.qualitative.G10
         )
-        fig_pca_ev.update_traces(line_shape='spline', line_width=2)
+        fig_pca_ev.update_traces(line=dict(shape='spline', width=2))
         fig_pca_ev.update_layout(plotly_layout_args)
         st.plotly_chart(fig_pca_ev, use_container_width=True)
 
@@ -370,7 +370,7 @@ if run_button or 'run_done' in st.session_state:
             labels={'value': 'Value', 'index': 'Date'},
             color_discrete_sequence=px.colors.qualitative.Bold
         )
-        fig_ae_ev.update_traces(line_shape='spline', line_width=2)
+        fig_ae_ev.update_traces(line=dict(shape='spline', width=2))
         fig_ae_ev.update_layout(plotly_layout_args)
         st.plotly_chart(fig_ae_ev, use_container_width=True)
 
