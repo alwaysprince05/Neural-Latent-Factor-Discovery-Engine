@@ -8,7 +8,7 @@ from data import get_data
 from pca_model import PCAModel
 from training import train_autoencoder
 
-# Set page configuration
+# Set page configuration with wide layout
 st.set_page_config(
     page_title="Neural Latent Factor Discovery Engine",
     page_icon="🔮",
@@ -16,67 +16,70 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for state-of-the-art dark glassmorphic design
+# Custom CSS for state-of-the-art dark glassmorphic design and animations
 st.markdown("""
 <style>
     /* Google Fonts Import */
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
     
     /* Main Background & Fonts */
     .stApp {
-        background-color: #08070d;
+        background: radial-gradient(circle at 50% 0%, #15102a 0%, #07060f 100%);
         font-family: 'Plus Jakarta Sans', sans-serif;
         color: #e2e8f0;
     }
     
     /* Sidebar customization */
     [data-testid="stSidebar"] {
-        background-color: #0e0d16;
-        border-right: 1px solid #1f1d2c;
+        background-color: #0b0a14;
+        border-right: 1px solid #1c1a30;
     }
     
     /* Custom Headers */
     h1, h2, h3, h4 {
-        font-family: 'Outfit', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
         font-weight: 700;
         letter-spacing: -0.02em;
     }
     
     .main-title {
-        font-size: 2.8rem;
-        background: linear-gradient(135deg, #00f2fe 0%, #4facfe 50%, #b180ff 100%);
+        font-size: 3.2rem;
+        background: linear-gradient(135deg, #00f2fe 0%, #4facfe 35%, #b180ff 70%, #f472b6 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 0.1rem;
+        margin-bottom: 0.2rem;
         font-weight: 800;
+        text-align: center;
+        filter: drop-shadow(0 0 30px rgba(79, 172, 254, 0.2));
     }
     
     .subtitle {
         color: #94a3b8;
-        font-size: 1.1rem;
-        margin-bottom: 2rem;
+        font-size: 1.2rem;
+        margin-bottom: 3rem;
         font-weight: 300;
+        text-align: center;
     }
     
-    /* Metric Cards with Glassmorphism */
+    /* Metric Cards with Glassmorphism & Neon Glow */
     .metric-container {
         display: flex;
-        gap: 20px;
-        margin-bottom: 25px;
+        gap: 24px;
+        margin-bottom: 30px;
     }
     
     .metric-card {
         flex: 1;
-        background: rgba(30, 27, 54, 0.4);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        border-radius: 16px;
-        padding: 24px;
+        background: rgba(17, 16, 32, 0.65);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        padding: 30px;
         position: relative;
         overflow: hidden;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
     }
     
     .metric-card::before {
@@ -85,29 +88,36 @@ st.markdown("""
         top: 0;
         left: 0;
         width: 100%;
-        height: 4px;
+        height: 5px;
     }
     
     .pca-card::before {
-        background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+        background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%);
     }
     
     .ae-card::before {
-        background: linear-gradient(90deg, #b180ff 0%, #ea580c 100%);
+        background: linear-gradient(90deg, #b180ff 0%, #f472b6 100%);
     }
     
     .metric-card:hover {
-        transform: translateY(-4px);
-        border-color: rgba(255, 255, 255, 0.1);
-        box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+        transform: translateY(-6px);
+        border-color: rgba(255, 255, 255, 0.15);
+    }
+    
+    .pca-card:hover {
+        box-shadow: 0 15px 45px rgba(0, 242, 254, 0.15);
+    }
+    
+    .ae-card:hover {
+        box-shadow: 0 15px 45px rgba(177, 128, 255, 0.15);
     }
     
     .metric-val {
-        font-family: 'Outfit', sans-serif;
-        font-size: 2.4rem;
-        font-weight: 800;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2.8rem;
+        font-weight: 700;
         letter-spacing: -0.03em;
-        margin-top: 10px;
+        margin-top: 12px;
     }
     
     .pca-val {
@@ -123,9 +133,9 @@ st.markdown("""
     }
     
     .metric-lbl {
-        font-size: 0.85rem;
+        font-size: 0.9rem;
         text-transform: uppercase;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.1em;
         color: #94a3b8;
         font-weight: 600;
     }
@@ -133,8 +143,31 @@ st.markdown("""
     /* Clean Divider */
     .divider {
         height: 1px;
-        background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.02) 100%);
-        margin: 30px 0;
+        background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
+        margin: 40px 0;
+    }
+    
+    /* Custom tab headers */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 12px;
+    }
+    .stTabs [data-baseweb="tab"] {
+        background-color: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 10px 20px;
+        color: #94a3b8;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    .stTabs [data-baseweb="tab"]:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        color: #ffffff;
+    }
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(135deg, rgba(79, 172, 254, 0.15) 0%, rgba(177, 128, 255, 0.15) 100%) !important;
+        border-color: rgba(79, 172, 254, 0.4) !important;
+        color: #ffffff !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -252,14 +285,14 @@ if run_button or 'run_done' in st.session_state:
         "📋 Data Preview"
     ])
 
-    # Plotly Custom Dark Style Config
+    # Plotly Custom Premium Dark Style Config
     plotly_layout_args = dict(
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         font=dict(color='#94a3b8', family='Plus Jakarta Sans'),
         margin=dict(t=50, b=50, l=50, r=50),
-        xaxis=dict(gridcolor='#1e293b', zerolinecolor='#334155'),
-        yaxis=dict(gridcolor='#1e293b', zerolinecolor='#334155')
+        xaxis=dict(gridcolor='#1b1932', zerolinecolor='#2a274c'),
+        yaxis=dict(gridcolor='#1b1932', zerolinecolor='#2a274c')
     )
 
     with tab1:
@@ -325,6 +358,7 @@ if run_button or 'run_done' in st.session_state:
             labels={'value': 'Value', 'index': 'Date'},
             color_discrete_sequence=px.colors.qualitative.G10
         )
+        fig_pca_ev.update_traces(line_shape='spline', line_width=2)
         fig_pca_ev.update_layout(plotly_layout_args)
         st.plotly_chart(fig_pca_ev, use_container_width=True)
 
@@ -336,6 +370,7 @@ if run_button or 'run_done' in st.session_state:
             labels={'value': 'Value', 'index': 'Date'},
             color_discrete_sequence=px.colors.qualitative.Bold
         )
+        fig_ae_ev.update_traces(line_shape='spline', line_width=2)
         fig_ae_ev.update_layout(plotly_layout_args)
         st.plotly_chart(fig_ae_ev, use_container_width=True)
 
@@ -345,8 +380,8 @@ if run_button or 'run_done' in st.session_state:
         
         # Autoencoder Loss Curve
         fig_loss = go.Figure()
-        fig_loss.add_trace(go.Scatter(y=train_losses, mode='lines', name='Train Loss', line=dict(color='#00ffcc', width=2.5)))
-        fig_loss.add_trace(go.Scatter(y=val_losses, mode='lines', name='Val Loss', line=dict(color='#ff00ff', width=2.5)))
+        fig_loss.add_trace(go.Scatter(y=train_losses, mode='lines', name='Train Loss', line=dict(color='#00ffcc', width=2.5, shape='spline')))
+        fig_loss.add_trace(go.Scatter(y=val_losses, mode='lines', name='Val Loss', line=dict(color='#ff00ff', width=2.5, shape='spline')))
         fig_loss.update_layout(
             plotly_layout_args,
             title="Autoencoder Training Loss (MSE)",
@@ -378,10 +413,10 @@ if run_button or 'run_done' in st.session_state:
 else:
     # Beautiful welcome screen / placeholder
     st.markdown("""
-    <div style="background: rgba(30, 27, 54, 0.2); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 40px; text-align: center; margin-top: 50px;">
-        <span style="font-size: 5rem;">🔮</span>
-        <h2 style="color: #ffffff; margin-top: 20px;">Ready to Discover Hidden Latent Factors?</h2>
-        <p style="color: #94a3b8; max-width: 600px; margin: 10px auto 30px auto; font-size: 1.1rem; line-height: 1.6;">
+    <div style="background: rgba(17, 16, 32, 0.4); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px; padding: 60px; text-align: center; margin-top: 50px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);">
+        <span style="font-size: 5.5rem; filter: drop-shadow(0 0 20px rgba(177, 128, 255, 0.5));">🔮</span>
+        <h2 style="color: #ffffff; margin-top: 25px; font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem;">Ready to Discover Hidden Latent Factors?</h2>
+        <p style="color: #94a3b8; max-width: 650px; margin: 15px auto 35px auto; font-size: 1.1rem; line-height: 1.7; font-weight: 300;">
             Configure your tickers, data range, and model details in the left sidebar, then click <b>Run Analysis Engine</b> to build the Classical PCA and Deep PyTorch Autoencoder models.
         </p>
     </div>
