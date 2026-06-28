@@ -3,10 +3,13 @@
 
 **Creator/Dev:** Prince Maurya
 
+![Dashboard Showcase](dashboard.png)
+
 ## What is this project about?
 This project is a scientific Python engine for discovering hidden (latent) risk factors in financial asset returns. It uses both classical Principal Component Analysis (PCA) and modern deep learning autoencoders to extract, analyze, and visualize latent factors that drive asset price movements. The system is designed for quantitative finance research, risk management, and machine learning experimentation.
 
 ## File Overview
+- `app.py`: Interactive web-based Streamlit dashboard with premium dark UI and live Plotly visualizations.
 - `data.py`: Data pipeline for loading historical prices (CSV or Yahoo Finance), computing log returns, and standardizing data.
 - `pca_model.py`: Implements classical PCA for extracting top K components, explained variance, and loading matrix visualization.
 - `autoencoder.py`: PyTorch deep autoencoder model for nonlinear latent factor extraction.
@@ -30,6 +33,10 @@ This project is a scientific Python engine for discovering hidden (latent) risk 
 	python main.py --source csv --csv_path data/your_prices.csv --pca_k 3 --ae_hidden 32 16 --ae_latent 3 --epochs 100
 	# Or with Yahoo Finance
 	python main.py --source yfinance --tickers AAPL MSFT GOOG --start 2020-01-01 --end 2023-01-01 --pca_k 3 --ae_hidden 32 16 --ae_latent 3 --epochs 100
+	```
+5. **Run the Streamlit interactive dashboard** (optional):
+	```bash
+	streamlit run app.py
 	```
 
 ## Features
